@@ -3,50 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task App - Login & Signup</title>
+    <title>TaskMaster - Login & Signup</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
+<body class="bg-gray-50 font-inter flex items-center justify-center h-screen">
     <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <!-- Login Form -->
         <div id="loginForm" class="form-container">
-            <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
-            <form id="login" onsubmit="handleLogin(event)">
+            <h2 class="text-2xl font-bold mb-6 text-center text-gray-900">Login to TaskMaster</h2>
+            <form id="login" onsubmit="handleLogin(event)" aria-label="Login Form">
                 <div class="mb-4">
                     <label for="loginEmail" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="loginEmail" name="email" class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <input type="email" id="loginEmail" name="email" class="mt-1 p-3 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required aria-required="true">
                 </div>
                 <div class="mb-4">
                     <label for="loginPassword" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" id="loginPassword" name="password" class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <input type="password" id="loginPassword" name="password" class="mt-1 p-3 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required aria-required="true">
                 </div>
-                <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Login</button>
+                <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Login
+                </button>
             </form>
-            <p class="mt-4 text-center">Don't have an account? <a href="#" onclick="toggleForm()" class="text-blue-500 hover:underline">Sign Up</a></p>
-            <p id="loginError" class="text-red-500 text-center mt-2 hidden"></p>
+            <p class="mt-4 text-center text-gray-600">Don't have an account? <a href="#" onclick="toggleForm()" class="text-blue-500 hover:underline">Sign Up</a></p>
+            <p id="loginError" class="text-red-500 text-center mt-2 hidden" role="alert"></p>
         </div>
 
         <!-- Signup Form -->
         <div id="signupForm" class="form-container hidden">
-            <h2 class="text-2xl font-bold mb-6 text-center">Sign Up</h2>
-            <form id="signup" onsubmit="handleSignup(event)">
+            <h2 class="text-2xl font-bold mb-6 text-center text-gray-900">Sign Up for TaskMaster</h2>
+            <form id="signup" onsubmit="handleSignup(event)" aria-label="Signup Form">
                 <div class="mb-4">
                     <label for="signupEmail" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="signupEmail" name="email" class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <input type="email" id="signupEmail" name="email" class="mt-1 p-3 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required aria-required="true">
                 </div>
                 <div class="mb-4">
                     <label for="signupPassword" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" id="signupPassword" name="password" class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required minlength="8">
+                    <input type="password" id="signupPassword" name="password" class="mt-1 p-3 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required minlength="8" aria-required="true">
                 </div>
                 <div class="mb-4">
                     <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required minlength="8">
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="mt-1 p-3 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required minlength="8" aria-required="true">
                 </div>
-                <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Sign Up</button>
+                <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition">
+                    <i class="fas fa-user-plus mr-2"></i> Sign Up
+                </button>
             </form>
-            <p class="mt-4 text-center">Already have an account? <a href="#" onclick="toggleForm()" class="text-blue-500 hover:underline">Login</a></p>
-            <p id="signupError" class="text-red-500 text-center mt-2 hidden"></p>
+            <p class="mt-4 text-center text-gray-600">Already have an account? <a href="#" onclick="toggleForm()" class="text-blue-500 hover:underline">Login</a></p>
+            <p id="signupError" class="text-red-500 text-center mt-2 hidden" role="alert"></p>
         </div>
     </div>
     <script src="script.js"></script>

@@ -3,48 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task App - Dashboard</title>
+    <title>TaskMaster - Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 </head>
-<body class="bg-gray-100">
-    <nav class="navbar">
-        <div class="container mx-auto flex justify-between items-center">
-            <a href="#" class="text-xl font-bold">Task App</a>
-            <div>
-                <a href="#" onclick="handleLogout()">Logout</a>
+<body class="bg-gray-50 font-inter flex">
+    <!-- Sidebar -->
+    <nav class="sidebar bg-gray-800 text-white w-64 min-h-screen p-4 flex flex-col justify-between transition-transform duration-300 transform md:translate-x-0 -translate-x-full" id="sidebar">
+        <div>
+            <div class="flex items-center mb-8">
+                <i class="fas fa-tasks text-2xl mr-2"></i>
+                <a href="#" class="text-xl font-bold">TaskMaster</a>
             </div>
+            <ul class="space-y-2">
+                <li>
+                    <a href="dashboard.html" class="flex items-center p-2 rounded-md hover:bg-gray-700 transition">
+                        <i class="fas fa-home mr-2"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="rewards.html" class="flex items-center p-2 rounded-md hover:bg-gray-700 transition">
+                        <i class="fas fa-trophy mr-2"></i> Rewards
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <button onclick="handleLogout()" class="flex items-center p-2 w-full rounded-md hover:bg-gray-700 transition">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </button>
         </div>
     </nav>
-    <div class="container mx-auto mt-8 p-4">
-        <h2 class="text-2xl font-bold mb-4">Welcome to Your Dashboard</h2>
-        <p>Email: <span id="userEmail" class="font-semibold"></span></p>
-        
-        <!-- Add Task Form -->
-        <div class="bg-white p-6 rounded-lg shadow-lg mt-6">
-            <h3 class="text-xl font-semibold mb-4">Add New Task</h3>
-            <form id="taskForm" onsubmit="handleAddTask(event)">
-                <div class="mb-4">
-                    <label for="taskTitle" class="block text-sm font-medium text-gray-700">Title</label>
-                    <input type="text" id="taskTitle" name="title" class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-6">
+        <!-- Mobile Menu Toggle -->
+        <button class="md:hidden text-gray-800 mb-4 focus:outline-none" onclick="toggleSidebar()">
+            <i class="fas fa-bars text-2xl"></i>
+        </button>
+
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+            <p class="text-gray-600 mt-2">Manage tasks and track progress.</p>
+        </header>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-white p-4 rounded-lg shadow-sm flex items-center space-x-4">
+                <i class="fas fa-tasks text-2xl text-blue-500"></i>
+                <div>
+                    <p class="text-sm text-gray-600">Total Tasks</p>
+                    <p id="totalTasks" class="text-lg font-semibold text-gray-900">0</p>
                 </div>
-                <div class="mb-4">
-                    <label for="taskDescription" class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea id="taskDescription" name="description" class="mt-1 p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm flex items-center space-x-4">
+                <i class="fas fa-check-circle text-2xl text-green-500"></i>
+                <div>
+                    <p class="text-sm text-gray-600">Completed</p>
+                    <p id="completedTasks" class="text-lg font-semibold text-gray-900">0</p>
                 </div>
-                <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Add Task</button>
-            </form>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm flex items-center space-x-4">
+                <i class="fas fa-star text-2xl text-yellow-500"></i>
+                <div>
+                    <p class="text-sm text-gray-600">Points</p>
+                    <p id="userPoints" class="text-lg font-semibold text-gray-900">0</p>
+                </div>
+            </div>
         </div>
 
-        <!-- Task List -->
-        <div class="mt-8">
-            <h3 class="text-xl font-semibold mb-4">Your Tasks</h3>
-            <div id="taskList"></div>
+        <!-- Heatmap Section -->
+        <section class="mb-8">
+            <button onclick="toggleHeatmap()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition">
+                <i class="fas fa-chart-bar mr-2"></i> Toggle Heatmap
+            </button>
+            <div id="heatmapSection" class="heatmap-container mt-4 hidden bg-white p-6 rounded-lg shadow-sm">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Task Completion Heatmap</h2>
+                <canvas id="heatmapCanvas"></canvas>
+            </div>
+        </section>
+
+        <!-- Add Task Form -->
+        <section class="task-form mb-8">
+            <button onclick="toggleTaskForm()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition w-full md:w-auto">
+                <i class="fas fa-plus mr-2"></i> Add Task
+            </button>
+            <div id="taskFormContainer" class="bg-white p-6 rounded-lg shadow-sm mt-4 hidden">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Create a Task</h2>
+                <form id="taskForm" onsubmit="handleAddTask(event)" aria-label="Add Task Form">
+                    <div class="mb-4">
+                        <label for="taskTitle" class="block text-sm font-medium text-gray-700">Title</label>
+                        <input type="text" id="taskTitle" name="title" class="mt-1 p-3 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required aria-required="true">
+                    </div>
+                    <div class="mb-4">
+                        <label for="taskDescription" class="block text-sm font-medium text-gray-700">Description</label>
+                        <textarea id="taskDescription" name="description" class="mt-1 p-3 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition" required aria-required="true"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="taskDeadline" class="block text-sm font-medium text-gray-700">Deadline (Optional)</label>
+                        <input type="date" id="taskDeadline" name="deadline" class="mt-1 p-3 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                    </div>
+                    <div class="mb-4">
+                        <label for="taskTags" class="block text-sm font-medium text-gray-700">Tags (Optional, hold Ctrl to select multiple)</label>
+                        <select id="taskTags" name="tags" multiple class="mt-1 p-3 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition task-tags" aria-describedby="tagsHelp">
+                            <option value="Work">Work</option>
+                            <option value="Study">Study</option>
+                            <option value="Exercise">Exercise</option>
+                            <option value="Meeting">Meeting</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Cooking">Cooking</option>
+                            <option value="Cleaning">Cleaning</option>
+                            <option value="Reading">Reading</option>
+                            <option value="Writing">Writing</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Social">Social</option>
+                            <option value="Hobbies">Hobbies</option>
+                            <option value="Errands">Errands</option>
+                            <option value="Health">Health</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Planning">Planning</option>
+                            <option value="Relaxation">Relaxation</option>
+                            <option value="Coding">Coding</option>
+                            <option value="Design">Design</option>
+                            <option value="Research">Research</option>
+                        </select>
+                        <p id="tagsHelp" class="text-sm text-gray-500 mt-1">Select tags to categorize your task.</p>
+                    </div>
+                    <div class="mb-4">
+                        <label for="taskDependencies" class="block text-sm font-medium text-gray-700">Dependencies (Optional, hold Ctrl to select multiple)</label>
+                        <select id="taskDependencies" name="dependencies" multiple class="mt-1 p-3 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition task-tags" aria-describedby="dependenciesHelp">
+                            <!-- Populated dynamically -->
+                        </select>
+                        <p id="dependenciesHelp" class="text-sm text-gray-500 mt-1">Select tasks that must be completed first.</p>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 transition">
+                        <i class="fas fa-check mr-2"></i> Add Task
+                    </button>
+                </form>
+                <p id="taskError" class="text-red-500 text-center mt-2 hidden" role="alert"></p>
+                <p id="taskSuccess" class="task-success hidden" role="alert"></p>
+            </div>
+        </section>
+
+        <!-- Task Filter and List -->
+        <section>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-900">Your Tasks</h2>
+                <div class="flex items-center space-x-2">
+                    <label for="tagFilter" class="text-sm font-medium text-gray-700 sr-only">Filter by Tag</label>
+                    <select id="tagFilter" onchange="handleTagFilterChange()" class="p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                        <option value="">All Tags</option>
+                    </select>
+                </div>
+            </div>
+            <div id="taskList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </section>
+
+        <!-- Pomodoro Modal -->
+        <div id="pomodoroModal" class="pomodoro-modal hidden" role="dialog" aria-labelledby="pomodoroTitle">
+            <button id="pomodoroClose" class="close-btn" aria-label="Close Pomodoro Modal">×</button>
+            <h3 id="pomodoroTitle" class="text-xl font-semibold text-gray-900 mb-4">Focus Mode</h3>
+            <p id="pomodoroTask" class="mb-2 text-gray-600"></p>
+            <p id="pomodoroStatus" class="mb-4 font-medium text-gray-900"></p>
+            <div id="pomodoroTimer" class="text-4xl font-bold text-center mb-4 text-blue-500">25:00</div>
+        </div>
+
+        <!-- Notification Toast -->
+        <div id="notification" class="notification hidden">
+            <p id="notificationMessage"></p>
+            <button onclick="closeNotification()" class="ml-4 text-gray-600 hover:text-gray-900">×</button>
         </div>
     </div>
+
     <script src="script.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', loadDashboard);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboard();
+            updateTaskStats();
+            loadTaskDependencies();
+        });
+
+        function toggleHeatmap() {
+            document.getElementById('heatmapSection').classList.toggle('hidden');
+        }
+
+        function toggleTaskForm() {
+            document.getElementById('taskFormContainer').classList.toggle('hidden');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
     </script>
 </body>
 </html>

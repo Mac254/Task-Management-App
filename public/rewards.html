@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMaster - Rewards</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-50 font-inter flex">
+    <!-- Sidebar -->
+    <nav class="sidebar bg-gray-800 text-white w-64 min-h-screen p-4 flex flex-col justify-between transition-transform duration-300 transform md:translate-x-0 -translate-x-full" id="sidebar">
+        <div>
+            <div class="flex items-center mb-8">
+                <i class="fas fa-tasks text-2xl mr-2"></i>
+                <a href="#" class="text-xl font-bold">TaskMaster</a>
+            </div>
+            <ul class="space-y-2">
+                <li>
+                    <a href="dashboard.html" class="flex items-center p-2 rounded-md hover:bg-gray-700 transition">
+                        <i class="fas fa-home mr-2"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="rewards.html" class="flex items-center p-2 rounded-md bg-gray-700 transition">
+                        <i class="fas fa-trophy mr-2"></i> Rewards
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <button onclick="handleLogout()" class="flex items-center p-2 w-full rounded-md hover:bg-gray-700 transition">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-6">
+        <!-- Mobile Menu Toggle -->
+        <button class="md:hidden text-gray-800 mb-4 focus:outline-none" onclick="toggleSidebar()">
+            <i class="fas fa-bars text-2xl"></i>
+        </button>
+
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Your Rewards</h1>
+            <p class="text-gray-600 mt-2">Celebrate your achievements and track your progress.</p>
+        </header>
+
+        <!-- Points Section -->
+        <section class="mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Points</h2>
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-star text-3xl text-yellow-500"></i>
+                    <div>
+                        <p class="text-2xl font-bold text-gray-900" id="totalPoints">0</p>
+                        <p class="text-sm text-gray-600">Earn points by completing tasks!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Badges Section -->
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Badges</h2>
+            <div id="badgeList" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+        </section>
+
+        <!-- Streak Section -->
+        <section>
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Weekly Streak</h2>
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <p class="text-sm text-gray-600 mb-2">Complete 5 tasks in a week to earn a bonus!</p>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="streakProgress" class="bg-blue-500 h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">Current Streak: <span id="streakCount">0</span>/5 tasks</p>
+            </div>
+        </section>
+
+        <!-- Notification Toast -->
